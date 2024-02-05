@@ -4,6 +4,7 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./App.css";
 import useCategoryHook from "./hoock/Calendar";
+import useDeletd from "./hoock/useDeletd";
 const localizer = momentLocalizer(moment);
 
 // Un array de eventos de prueba
@@ -11,8 +12,9 @@ const localizer = momentLocalizer(moment);
 // Un componente que renderiza el calendario
 const MyCalendar = () => {
   const { categories,setCategories ,newCategory, setNewCategory, addCategory } = useCategoryHook();
+
   //calendar
-  // const [events, setEnvents] = useState([]);
+   const [events, setEnvents] = useState([]);
   const [calendarKey, setCalendarKey] = useState(0);
   //category
 
@@ -61,24 +63,24 @@ const MyCalendar = () => {
   //     setCategori([...categories, newCategory]);
   //   }
   // };
-  // const deletd = (category) => {
-  //   let indice = categories.indexOf(category);
-  //   console.log(category);
-  //   let updatedEvents = [];
-  //   for (let i = 0; i < events.length; i++) {
-  //     if (events[i].category !== category) {
-  //       updatedEvents.push(events[i]);
-  //     }
-  //   }
+  const deletd = (category) => {
+    let indice = categories.indexOf(category);
+    console.log(category);
+    let updatedEvents = [];
+    for (let i = 0; i < events.length; i++) {
+      if (events[i].category !== category) {
+        updatedEvents.push(events[i]);
+      }
+    }
 
-  //   console.log(updatedEvents);
-  //   categories.splice(indice, 1);
-  //   setCategories([...categories]);
+    console.log(updatedEvents);
+    categories.splice(indice, 1);
+    setCategories([...categories]);
 
-  //   setEnvents(updatedEvents);
-  //   setCalendarKey((prevKey) => prevKey + 1);
-  //   console.log(events);
-  // };
+    setEnvents(updatedEvents);
+    setCalendarKey((prevKey) => prevKey + 1);
+    console.log(events);
+  };
   const horasOptions = Array.from({ length: 24 }, (_, index) => (
     <option key={index} value={index}>
       La hora es {index}
