@@ -94,6 +94,9 @@ const useCategoryHook = () => {
     setEnvents(events);
     setCalendarKey((prevKey) => prevKey + 1);
   };
+  const changeAllDay = () => {
+    setAllday(!allDay);
+  };
   return {
     categories,
     setCategories,
@@ -117,7 +120,8 @@ const useCategoryHook = () => {
     selecCategory,
     setSelectCategory,
     setTitleDate,
-    calendarKey
+    calendarKey,
+    changeAllDay
   };
 };
 

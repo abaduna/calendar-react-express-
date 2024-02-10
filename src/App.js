@@ -4,12 +4,9 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./App.css";
 import useCategoryHook from "./hoock/Calendar";
-import useDeletd from "./hoock/useDeletd";
+
 const localizer = momentLocalizer(moment);
 
-// Un array de eventos de prueba
-
-// Un componente que renderiza el calendario
 const MyCalendar = () => {
   const {
     categories,
@@ -34,10 +31,10 @@ const MyCalendar = () => {
     selecCategory,
     setSelectCategory,
     setTitleDate,
-    calendarKey
+    calendarKey,
+    changeAllDay,
   } = useCategoryHook();
 
-  
   useEffect(() => {
     setEnvents([
       {
@@ -71,11 +68,7 @@ const MyCalendar = () => {
       La hora es {index}
     </option>
   ));
-  
 
-  const changeAllDay = () => {
-    setAllday(!allDay);
-  };
   return (
     <div className="container">
       <div style={{ height: 500, width: 900 }}>
