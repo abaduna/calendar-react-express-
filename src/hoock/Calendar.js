@@ -1,5 +1,11 @@
-import { useState } from "react";
-
+import { useState, useReducer } from "react";
+import {
+  ADD_CATEGORY,
+  SET_DELETED,
+  ADD_EVENT,
+  ADD_Allday,
+} from "../action/calendar";
+import { calendarReducer } from "../reducers/Calendar";
 const useCategoryHook = () => {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
@@ -14,88 +20,80 @@ const useCategoryHook = () => {
   const [timeEnd, setTimeEnd] = useState(null);
   //new date
   const [titleDate, setTitleDate] = useState(null);
-  const [allDay, setAllday] = useState(true);
+  // const [allDay, setAllday] = useState(true);
   //new date category
   const [selecCategory, setSelectCategory] = useState(null);
+
+  //reducer
+  const [state, dispatch] = useReducer(calendarReducer, calendarReducer());
   const addCategory = () => {
-    if (newCategory) {
-      setCategories([...categories, newCategory]);
-      setNewCategory("");
-    }
+    console.log(`click`);
+    console.log(newCategory);
+
+    dispatch({ type: ADD_CATEGORY, payload: newCategory });
+    // setCategories([...categories, newCategory]); // Eliminado
+    setNewCategory("");
+    console.log(state.categories);
   };
   const deletd = (category) => {
-    let indice = categories.indexOf(category);
     console.log(category);
-    let updatedEvents = [];
-    for (let i = 0; i < events.length; i++) {
-      if (events[i].category !== category) {
-        updatedEvents.push(events[i]);
-      }
-    }
-
-    console.log(updatedEvents);
-    categories.splice(indice, 1);
-    setCategories([...categories]);
-
-    setEnvents(updatedEvents);
-    setCalendarKey((prevKey) => prevKey + 1);
-    console.log(events);
+    dispatch({ type: SET_DELETED, payload: category });
   };
   const sendDate = () => {
-    let dateTimeStart = dateStart.split("-");
-
-    if (allDay) {
-      let date = {
-        id: events.length,
-        title: titleDate,
-        start: new Date(
-          dateTimeStart[0],
-          dateTimeStart[1] - 1,
-          dateTimeStart[2],
-          timeStart,
-          0
-        ),
-        end: new Date(
-          dateTimeStart[0],
-          dateTimeStart[1] - 1,
-          dateTimeStart[2],
-          timeStart,
-          0
-        ),
-        category: selecCategory,
-      };
-      events.push(date);
-      console.log(events);
-      setEnvents(events);
-      return setCalendarKey((prevKey) => prevKey + 1);
-    }
-    let dataTimeEnd = dateEnd.split("-");
-    let date = {
-      id: events.length,
-      title: titleDate,
-      start: new Date(
-        dateTimeStart[0],
-        dateTimeStart[1] - 1,
-        dateTimeStart[2],
-        timeStart,
-        0
-      ),
-      end: new Date(
-        dataTimeEnd[0],
-        dataTimeEnd[1] - 1,
-        dataTimeEnd[2],
-        timeEnd,
-        0
-      ),
-      category: selecCategory,
+    const dataFecha = () => {
+      let dateTimeStart = dateStart.split("-");
+      let date = {};
+      if (state.allDay) {
+        date = {
+          id: events.length,
+          title: titleDate,
+          start: new Date(
+            dateTimeStart[0],
+            dateTimeStart[1] - 1,
+            dateTimeStart[2],
+            timeStart,
+            0
+          ),
+          end: new Date(
+            dateTimeStart[0],
+            dateTimeStart[1] - 1,
+            dateTimeStart[2],
+            timeStart,
+            0
+          ),
+          category: selecCategory,
+        };
+      }
+      if (!state.allDay) {
+        let dataTimeEnd = dateEnd.split("-");
+        date = {
+          id: events.length,
+          title: titleDate,
+          start: new Date(
+            dateTimeStart[0],
+            dateTimeStart[1] - 1,
+            dateTimeStart[2],
+            timeStart,
+            0
+          ),
+          end: new Date(
+            dataTimeEnd[0],
+            dataTimeEnd[1] - 1,
+            dataTimeEnd[2],
+            timeEnd,
+            0
+          ),
+          category: selecCategory,
+        };
+      }
+      return date;
     };
-    events.push(date);
-    console.log(events);
-    setEnvents(events);
-    setCalendarKey((prevKey) => prevKey + 1);
+    let dateDisp = dataFecha();
+    dispatch({ type: ADD_EVENT, payload: dateDisp });
   };
   const changeAllDay = () => {
-    setAllday(!allDay);
+    dispatch({ type: ADD_Allday });
+
   };
   return {
     categories,
@@ -115,13 +113,12 @@ const useCategoryHook = () => {
     setDateEnd,
     timeEnd,
     setTimeEnd,
-    setAllday,
-    allDay,
+
     selecCategory,
     setSelectCategory,
     setTitleDate,
     calendarKey,
-    changeAllDay
+    changeAllDay,
   };
 };
 

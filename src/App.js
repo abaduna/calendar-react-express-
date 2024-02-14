@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./App.css";
 import useCategoryHook from "./hoock/Calendar";
+import { calendarReducer } from "./reducers/Calendar";
+import { SET_CATEGORY } from "./action/calendar";
 
 const localizer = momentLocalizer(moment);
 
@@ -26,56 +28,31 @@ const MyCalendar = () => {
     setDateEnd,
     timeEnd,
     setTimeEnd,
-    setAllday,
-    allDay,
+
     selecCategory,
     setSelectCategory,
     setTitleDate,
     calendarKey,
     changeAllDay,
   } = useCategoryHook();
-
+  const [state, discpach] = useReducer(calendarReducer, calendarReducer());
+  useEffect(() => {}, []);
   useEffect(() => {
-    setEnvents([
-      {
-        id: 1,
-        title: "Cumpleaños de Juan",
-        start: new Date(2024, 1, 5),
-        end: new Date(2024, 1, 5),
-        allDay: true,
-        category: "cumpleaños",
-      },
-      {
-        id: 2,
-        title: "Reunión con clientes",
-        start: new Date(2024, 1, 6, 10, 0),
-        end: new Date(2024, 1, 6, 12, 0),
-        category: "trabajo",
-      },
-      {
-        id: 3,
-        title: "Clase de yoga",
-        start: new Date(2024, 1, 7, 18, 0),
-        end: new Date(2024, 1, 7, 23, 0),
-        category: "ocio",
-      },
-    ]);
-    setCategories(["ocio", "trabajo", "cumpleaños"]);
-  }, []);
-
+    discpach({ type: SET_CATEGORY });
+  }, [state.categories]);
   const horasOptions = Array.from({ length: 24 }, (_, index) => (
     <option key={index} value={index}>
       La hora es {index}
     </option>
   ));
-
+  console.log(state.categories);
   return (
     <div className="container">
       <div style={{ height: 500, width: 900 }}>
         <Calendar
           key={calendarKey}
           localizer={localizer}
-          events={events}
+          events={state.events}
           startAccessor="start"
           endAccessor="end"
           defaultView="month"
@@ -106,7 +83,7 @@ const MyCalendar = () => {
         <div>
           <p>Lista de categoria</p>
           <ul>
-            {categories?.map((category, index) => (
+            {state.categories?.map((category, index) => (
               <li key={index}>
                 {category}{" "}
                 <button onClick={() => deletd(category)}>Eliminar</button>{" "}
@@ -130,7 +107,7 @@ const MyCalendar = () => {
             <option value="" disabled>
               Selecciona una categoria
             </option>
-            {categories.map((catego, index) => (
+            {state.categories.map((catego, index) => (
               <option key={index} value={catego}>
                 {catego}
               </option>
@@ -153,12 +130,12 @@ const MyCalendar = () => {
               {horasOptions}
             </select>
           </div>
-          {allDay ? (
+          {state.allDay ? (
             <div>
               <input
                 type="checkbox"
-                value={allDay}
-                checked={allDay}
+                value={state.allDay}
+                checked={state.allDay}
                 onChange={changeAllDay}
               />
               <label for="miCheckbox">Es todo el dia </label>
